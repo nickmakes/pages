@@ -19,8 +19,7 @@ const output = env => {
   const filename = env.build ? 'bundle.min.js' : 'bundle.js';
   return {
     filename,
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/static/'
+    path: path.resolve(__dirname, 'dist')
   };
 }
 const devtool = env => env.build ? 'cheap-source-map' : 'inline-source-map';
