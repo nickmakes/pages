@@ -1,13 +1,8 @@
 import actionCreatorFactory from 'typescript-fsa';
 import { asyncFactory } from 'typescript-fsa-redux-thunk';
+import { MediaType } from 'mmdb-client-factory';
 
-import {
-  AppState,
-  AsyncContext,
-  ReqresCredentials,
-  ReqresAccess,
-  ReqresState
-} from './app-state';
+import { AppState, AsyncContext, ReqresCredentials, ReqresAccess, ReqresState } from './app-state';
 import { buildReducer, newAsyncActionHandler } from './util';
 
 const reqresAction = actionCreatorFactory('reqres');
@@ -15,12 +10,20 @@ const reqresAsyncAction = asyncFactory<AppState, AsyncContext>(reqresAction);
 
 export const login = reqresAsyncAction<ReqresCredentials, ReqresAccess>(
   'login',
-  (_params, _dispatch, _getState, { client }) => client.http.get('http://reqres.in/api/login')
+  (user, _dispatch, _getState, { client }) =>
+    client.http.post('https://reqres.in/api/login', {
+      body: JSON.stringify(user),
+      contentType: MediaType.APPLICATION_JSON
+    })
 );
 
 export const register = reqresAsyncAction<ReqresCredentials, ReqresAccess>(
   'register',
-  (_params, _dispatch, _getState, { client }) => client.http.get('http://reqres.in/api/register')
+  (user, _dispatch, _getState, { client }) =>
+    client.http.post('https://reqres.in/api/login', {
+      body: JSON.stringify(user),
+      contentType: MediaType.APPLICATION_JSON
+    })
 );
 
 export const initialReqresState: ReqresState = {};

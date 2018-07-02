@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 
 import { AppState, ReqresAccess, ReqresCredentials } from './app-state';
 import { login, register } from './reqres';
+import Form from './form/Form';
+import PasswordInput from './form/PasswordInput';
+import TextInput from './form/TextInput';
 
 interface OwnProps {}
 
@@ -20,8 +23,8 @@ interface DispatchProps {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-const initialState = { counter: 0 };
-type State = Readonly<typeof initialState>;
+const initialState: State = {};
+type State = Readonly<{ [key: string]: string }>;
 
 class LandingPage extends React.Component<Props, State> {
   readonly state: State = initialState;
@@ -30,11 +33,34 @@ class LandingPage extends React.Component<Props, State> {
     super(props);
   }
 
+  handleInputChange = (e: any) => {
+    console.log(this.state);
+    const { name, type, checked, value } = e.target;
+    this.setState({ [name]: type === 'checkbox' ? checked : value });
+  };
+
+  login = () => {
+    const { email, password } = this.state;
+    this.props.login(email, password);
+  };
+
   render() {
     return (
-      <div>
-        <h3>got heem!</h3>
-        <p>TODO: implement login/register</p>
+      <div className="Landing-Page">
+        <section className="Landing-Page-Banner">
+          <div className="Landing-Page-Banner-Headline">
+            <h3>what</h3>
+            <h2>makes.life</h2>
+            <h3>for you?</h3>
+          </div>
+          <p className="Landing-Page-Banner-Tagline">brought to you by mmdb.</p>
+          <div className="Landing-Page-Banner-Actions">
+            <Form legend="login" onSubmit={this.login}>
+              <TextInput label="email" name="email" onChange={this.handleInputChange} />
+              <PasswordInput name="password" onChange={this.handleInputChange} />
+            </Form>
+          </div>
+        </section>
       </div>
     );
   }
@@ -46,7 +72,12 @@ const mapStateToProps = ({ reqres: { user, token, error } }: AppState): StatePro
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    login: (email: string, password: string) => dispatch<any>(login.action({ email, password })),
+    login: (email: string, password: string) => {
+      console.log(`dispatching login action: ${email} / ${password}`);
+      const creds = { email, password };
+      console.log(creds);
+      return dispatch<any>(login.action(creds));
+    },
     register: (email: string, password: string) =>
       dispatch<any>(register.action({ email, password }))
   };
